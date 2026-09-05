@@ -7,3 +7,7 @@ needs jdk!!
 javac -sourcepath src src/Main.java
 java -cp src Main
 ```
+
+## Draw IO sketch of the UML
+
+dir: ideas/screenshot
