@@ -14,3 +14,13 @@ Ideas:
 
 - Candlesticks
 - moving upon price change
+
+
+- Bottom Text Analysis
+
+Showing Now:
+Open
+Last
+Day  range price
+Change  ( %)
+
