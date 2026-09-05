@@ -1,4 +1,10 @@
-# Stock Simulation
+<<<<<<< HEAD
+=======
+#STOCK MARKET SIMULATOR
+
+COMP2000 Semester Project
+
+Ideas:
 - 3 Pages
     - Dashboard
     - Wallet
@@ -7,3 +13,4 @@
 - Track individual stocks
 
 - Light/Dark Mode
+>>>>>>> 257f1b6db45464538a275e450345640b2e223d23
