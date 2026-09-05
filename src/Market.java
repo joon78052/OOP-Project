@@ -20,4 +20,8 @@ public class Market {
     public void addTrader(Trader trader) {
         traders.add(trader);
     }
+
+    public ArrayList<Stock> getStocks() {
+        return stocks;
+    }
 }
