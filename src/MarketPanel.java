@@ -14,7 +14,7 @@ public class MarketPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        rendComponent(g);
+        renderComponent(g);
     }
     
     private void renderComponent(Graphics g) {
@@ -31,7 +31,7 @@ public class MarketPanel extends JPanel {
         for (int i = 0; i < stocks.size(); i++) {
             Stock stock = stocks.get(i);
             g.setColor(Color.BLACK);
-            g.drawString(stock.getSymbol() + "   $" + String.format("%.2f", stock.getPrice()),
+            g.drawString("$" + stock.getSymbol() + "   $" + String.format("%.2f", stock.getPrice()),
                     chartLeft, y);
 
             drawChart(g, stock, chartLeft, y + 10, chartWidth, chartHeight);
