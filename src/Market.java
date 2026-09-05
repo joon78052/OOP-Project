@@ -10,6 +10,10 @@ public class Market {
         traders = new ArrayList<>();
     }
 
+    public void update() {
+        // Simulation logic will move prices later
+    }
+
     public void updateButton() {
     }
 
