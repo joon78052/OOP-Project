@@ -1,7 +1,7 @@
-import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import javax.swing.JPanel;
 
 public class MarketPanel extends JPanel {
 
@@ -29,13 +29,36 @@ public class MarketPanel extends JPanel {
         int chartWidth = getWidth() - 60;
 
         for (int i = 0; i < stocks.size(); i++) {
-            Stock stock = stocks.get(i);
-            g.setColor(Color.BLACK);
-            g.drawString("$" + stock.getSymbol() + "   $" + String.format("%.2f", stock.getPrice()),
-                    chartLeft, y);
 
-            drawChart(g, stock, chartLeft, y + 10, chartWidth, chartHeight);
-            y += chartHeight + 50;
+            Stock stock = stocks.get(i);
+        
+            g.setColor(Color.BLACK);
+        
+            g.drawString(
+                    "$" + stock.getSymbol()
+                            + "   $"
+                            + String.format("%.2f", stock.getPrice()),
+                    chartLeft,
+                    y
+            );
+        
+            drawChart(
+                    g,
+                    stock,
+                    chartLeft,
+                    y + 10,
+                    chartWidth,
+                    chartHeight
+            );
+        
+            drawStockAnalysis(
+                    g,
+                    stock,
+                    chartLeft,
+                    y + chartHeight + 30
+            );
+        
+            y += chartHeight + 240;
         }
     }
 
@@ -71,4 +94,82 @@ public class MarketPanel extends JPanel {
             x += candleWidth + 2;
         }
     }
+
+    private void drawStockAnalysis(Graphics g, Stock stock, int x, int y) {
+
+        ArrayList<Candle> candles = stock.getCandles();
+    
+
+        double lastPrice = stock.getPrice();
+    
+
+        double dayLow = lastPrice;
+        double dayHigh = lastPrice;
+    
+        if (!candles.isEmpty()) {
+            dayLow = candles.get(0).lowest();
+            dayHigh = candles.get(0).highest();
+    
+            for (Candle candle : candles) {
+                dayLow = Math.min(dayLow, candle.lowest());
+                dayHigh = Math.max(dayHigh, candle.highest());
+            }
+        }
+    
+        g.setColor(Color.BLACK);
+    
+
+    
+        g.drawString("SHOWING NOW", x, y);
+    
+        g.drawString(
+                "Last: $" + String.format("%.2f", lastPrice),
+                x,
+                y + 22
+        );
+    
+        g.drawString(
+                "Day Range: $" +
+                        String.format("%.2f", dayLow) +
+                        " - $" +
+                        String.format("%.2f", dayHigh),
+                x + 150,
+                y + 22
+        );
+    
+
+        g.drawString(
+                "Open: not implemented yet",
+                x,
+                y + 44
+        );
+    
+        g.drawString(
+                "Change: not implemented yet",
+                x + 150,
+                y + 44
+        );
+    
+    
+        g.drawString("SIMULATION LOGIC", x, y + 75);
+    
+        g.drawString("Buyers: --", x, y + 97);
+        g.drawString("Sellers: --", x + 120, y + 97);
+    
+        g.drawString("Last Trade: --", x, y + 119);
+        g.drawString("Volume: --", x + 180, y + 119);
+    
+        g.drawString("Retail / Institutional: -- / --", x, y + 141);
+    
+        g.drawString("Held: --", x, y + 163);
+        g.drawString("Cash Idle: --", x + 120, y + 163);
+
+
+        g.drawString(
+                "Analysis: Market simulation data will appear here once trader logic is implemented.",
+                x,
+                y + 190
+        );
+    }
+
 }
