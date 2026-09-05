@@ -24,3 +24,11 @@ Last
 Day  range price
 Change  ( %)
 
+Simulation Logic show:
+Buyers
+Sellers
+Last Trade
+Volume
+Retail / Institional
+Held
+Cash Idle
