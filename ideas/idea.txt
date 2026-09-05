@@ -11,3 +11,6 @@ Ideas:
 - Track individual stocks
 
 - Light/Dark Mode
+
+- Candlesticks
+- moving upon price change
