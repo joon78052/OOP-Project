@@ -1,0 +1,9 @@
+# Stock Simulation
+- 3 Pages
+    - Dashboard
+    - Wallet
+    - Stocks
+
+- Track individual stocks
+
+- Light/Dark Mode
