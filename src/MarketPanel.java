@@ -108,10 +108,10 @@ public class MarketPanel extends JPanel {
                 "Volume", "--",
                 "Retail flow", "--",
                 "Traders", "--"},
-            {"Session", "Initial",
-                "Last trade", "--",
+            {"Last trade", "--",
                 "Institutional flow", "--",
-                "Status", "Waiting for traders"}
+                "Status", "Waiting for traders",
+                "", ""}
         };
 
         Stroke old = Graph.getStroke();
