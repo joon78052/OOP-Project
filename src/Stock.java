@@ -6,11 +6,13 @@ public class Stock {
 
     private String symbol;
     private double price;
+    private double openingPrice;
     private ArrayList<Candle> candles;
 
     public Stock(String symbol, double price) {
         this.symbol = symbol;
         this.price = price;
+        this.openingPrice = price;
         this.candles = new ArrayList<>();
         candles.add(new Candle(price, price, price, price));
     }
