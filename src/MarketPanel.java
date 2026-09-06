@@ -1,175 +1,185 @@
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 
 public class MarketPanel extends JPanel {
 
+    private static final Color UP = new Color(30, 140, 70);
+    private static final Color DOWN = new Color(180, 40, 40);
+    private static final Color LABEL = new Color(90, 90, 90);
+    private static final Color LINE = new Color(190, 190, 190);
+
     private final Market market;
+    private final Font titleFont = new Font("SansSerif", Font.BOLD, 16);
+    private final Font priceFont = new Font("SansSerif", Font.BOLD, 28);
+    private final Font changeFont = new Font("SansSerif", Font.BOLD, 14);
+    private final Font bodyFont = new Font("SansSerif", Font.PLAIN, 12);
+    private final Font smallFont = new Font("SansSerif", Font.PLAIN, 11);
 
     public MarketPanel(Market market) {
         this.market = market;
+        setBackground(Color.WHITE);
+        setPreferredSize(new Dimension(980, 920));
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        renderComponent(g);
+    protected void paintComponent(Graphics Graph) {
+        super.paintComponent(Graph);
+        renderComponent(Graph);
     }
-    
-    private void renderComponent(Graphics g) {
-        g.setColor(Color.BLACK);
-        g.drawString("Stock Market Sim", 30, 24);
-        g.drawString("Initial prices (will move later from traders)", 30, 42);
 
-        ArrayList<Stock> stocks = market.getStocks();
-        int y = 60;
-        int chartHeight = 180;
-        int chartLeft = 30;
-        int chartWidth = getWidth() - 60;
+    private void renderComponent(Graphics Graph) {
+        Graphics2D Graph2D = (Graphics2D) Graph;
+        Graph2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+        ArrayList<Stock> stocks = market.getStocks(); //Stock list from th market
+        int left = 24;
+        int width = Math.max(400, getWidth() - 48);
+        int y = 20;
+
+        Graph2D.setFont(bodyFont);
+        Graph2D.setColor(LABEL);
+        Graph2D.drawString("Stock Market Sim", left, y);
+        y += 18;
+
+        int chartHeight = 150;
         for (int i = 0; i < stocks.size(); i++) {
-
             Stock stock = stocks.get(i);
-        
-            g.setColor(Color.BLACK);
-        
-            g.drawString(
-                    "$" + stock.getSymbol()
-                            + "   $"
-                            + String.format("%.2f", stock.getPrice()),
-                    chartLeft,
-                    y
-            );
-        
-            drawChart(
-                    g,
-                    stock,
-                    chartLeft,
-                    y + 10,
-                    chartWidth,
-                    chartHeight
-            );
-        
-            drawStockAnalysis(
-                    g,
-                    stock,
-                    chartLeft,
-                    y + chartHeight + 30
-            );
-        
-            y += chartHeight + 240;
+            y = drawQuoteHeader(Graph2D, stock, left, y, width);
+            drawChart(Graph2D, stock, left, y, width, chartHeight);
+            y += chartHeight + 16;
+            y = drawStatsGrid(Graph2D, stock, left, y, width);
+            y += 28;
         }
     }
 
-    private void drawChart(Graphics g, Stock stock, int left, int top, int width, int height) {
-        g.setColor(new Color(230, 230, 230));
-        g.fillRect(left, top, width, height);
-        g.setColor(Color.GRAY);
-        g.drawRect(left, top, width, height);
+
+
+
+    private int drawQuoteHeader(Graphics2D Graph, Stock stock, int x, int y, int width) {
+        Graph.setColor(LINE);
+        Graph.drawLine(x, y, x + width, y); // sep line
+        y += 22;
+
+        Graph.setFont(titleFont);
+        Graph.setColor(Color.BLACK);
+        Graph.drawString("$" + stock.getSymbol(), x, y);
+        y += 32;
+
+        Graph.setFont(priceFont);
+        Graph.drawString(money(stock.getPrice()), x, y);
+
+        double change = stock.getChange();
+        String changeText = formatChange(change) + " (" + formatChange(stock.getChangePercent()) + "%)";
+        Graph.setFont(changeFont);
+        Graph.setColor(change >= 0 ? UP : DOWN);
+        Graph.drawString(changeText, x + 150, y);
+
+        y += 20;
+        Graph.setFont(smallFont);
+        Graph.setColor(LABEL);
+        Graph.drawString("Open " + money(stock.getOpeningPrice())
+                + "   Day range " + money(stock.getDayLow())
+                + " – " + money(stock.getDayHigh()), x, y);
+        return y + 12;
+    }
+
+    private int drawStatsGrid(Graphics2D Graph, Stock stock, int x, int y, int width) {
+        int colW = width / 4;
+        int rowH = 24;
+
+        String[][] cells = {
+            {"Open", money(stock.getOpeningPrice()),
+                "Day range", money(stock.getDayLow()) + " – " + money(stock.getDayHigh()),
+                "Buyers", "--",
+                "Held", "--"},
+            {"Last", money(stock.getPrice()),
+                "Change", formatChange(stock.getChange()) + " (" + formatChange(stock.getChangePercent()) + "%)",
+                "Sellers", "--",
+                "Cash idle", "--"},
+            {"Previous close", money(stock.getOpeningPrice()),
+                "Volume", "--",
+                "Retail flow", "--",
+                "Traders", "--"},
+            {"Session", "Initial",
+                "Last trade", "--",
+                "Institutional flow", "--",
+                "Status", "Waiting for traders"}
+        };
+
+        Stroke old = Graph.getStroke();
+        Graph.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
+                10, new float[]{2f, 3f}, 0));
+
+        for (int row = 0; row < cells.length; row++) {
+            int rowY = y + row * rowH;
+            Graph.setColor(LINE);
+            Graph.drawLine(x, rowY, x + width, rowY);
+
+            for (int col = 0; col < 4; col++) {
+                int cellX = x + col * colW;
+                String label = cells[row][col * 2];
+                String value = cells[row][col * 2 + 1];
+                Graph.setFont(smallFont);
+                Graph.setColor(LABEL);
+                Graph.drawString(label, cellX + 4, rowY + 16);
+                Graph.setFont(bodyFont);
+                Graph.setColor(Color.BLACK);
+                int valueWidth = Graph.getFontMetrics().stringWidth(value);
+                Graph.drawString(value, cellX + colW - valueWidth - 12, rowY + 16);
+            }
+        }
+
+        int bottom = y + cells.length * rowH;
+        Graph.setColor(LINE);
+        Graph.drawLine(x, bottom, x + width, bottom);
+        Graph.setStroke(old);
+
+        Graph.setFont(smallFont);
+        Graph.setColor(LABEL); //Change this later to 
+
+
+        return bottom + 20;
+    }
+
+    private void drawChart(Graphics Graph, Stock stock, int left, int top, int width, int height) {
+        Graph.setColor(new Color(245, 245, 245));
+        Graph.fillRect(left, top, width, height);
+        Graph.setColor(Color.GRAY);
+        Graph.drawRect(left, top, width, height);
 
         ArrayList<Candle> candles = stock.getCandles();
         if (candles.isEmpty()) {
             return;
         }
 
-        //find the high low prices
-
-
-        double minPrice = candles.get(0).lowest();
-        double maxPrice = candles.get(0).highest();
-        for (int i = 0; i < candles.size(); i++) {
-            Candle candle = candles.get(i);
-            minPrice = Math.min(minPrice, candle.lowest());
-            maxPrice = Math.max(maxPrice, candle.highest());
-        }
-        double pad = Math.max(0.50, (maxPrice - minPrice) * 0.12);
+        double minPrice = stock.getDayLow();
+        double maxPrice = stock.getDayHigh();
+        double pad = Math.max(0.50, (maxPrice - minPrice) * 0.12); // padding to the min and max price.
         minPrice -= pad;
         maxPrice += pad;
 
         int candleWidth = Math.max(6, width / Math.max(20, candles.size() + 2));
         int x = left + 8;
         for (int i = 0; i < candles.size(); i++) {
-            candles.get(i).draw(g, x, candleWidth, top + 4, height - 8, minPrice, maxPrice);
+            candles.get(i).draw(Graph, x, candleWidth, top + 4, height - 8, minPrice, maxPrice);
             x += candleWidth + 2;
         }
     }
 
-    private void drawStockAnalysis(Graphics g, Stock stock, int x, int y) {
-
-        ArrayList<Candle> candles = stock.getCandles();
-    
-
-        double lastPrice = stock.getPrice();
-    
-
-        double dayLow = lastPrice;
-        double dayHigh = lastPrice;
-    
-        if (!candles.isEmpty()) {
-            dayLow = candles.get(0).lowest();
-            dayHigh = candles.get(0).highest();
-    
-            for (Candle candle : candles) {
-                dayLow = Math.min(dayLow, candle.lowest());
-                dayHigh = Math.max(dayHigh, candle.highest());
-            }
-        }
-    
-        g.setColor(Color.BLACK);
-    
-
-    
-        g.drawString("SHOWING NOW", x, y);
-    
-        g.drawString(
-                "Last: $" + String.format("%.2f", lastPrice),
-                x,
-                y + 22
-        );
-    
-        g.drawString(
-                "Day Range: $" +
-                        String.format("%.2f", dayLow) +
-                        " - $" +
-                        String.format("%.2f", dayHigh),
-                x + 150,
-                y + 22
-        );
-    
-
-        g.drawString(
-                "Open: not implemented yet",
-                x,
-                y + 44
-        );
-    
-        g.drawString(
-                "Change: not implemented yet",
-                x + 150,
-                y + 44
-        );
-    
-    
-        g.drawString("SIMULATION LOGIC", x, y + 75);
-    
-        g.drawString("Buyers: --", x, y + 97);
-        g.drawString("Sellers: --", x + 120, y + 97);
-    
-        g.drawString("Last Trade: --", x, y + 119);
-        g.drawString("Volume: --", x + 180, y + 119);
-    
-        g.drawString("Retail / Institutional: -- / --", x, y + 141);
-    
-        g.drawString("Held: --", x, y + 163);
-        g.drawString("Cash Idle: --", x + 120, y + 163);
-
-
-        g.drawString(
-                "Analysis: Market simulation data will appear here once trader logic is implemented.",
-                x,
-                y + 190
-        );
+    private String money(double value) {
+        return "$" + String.format("%.2f", value);
     }
 
+    private String formatChange(double value) {
+        String sign = value > 0 ? "+" : "";
+        return sign + String.format("%.2f", value);
+    }
 }

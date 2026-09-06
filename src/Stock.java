@@ -25,6 +25,37 @@ public class Stock {
         return price;
     }
 
+    public double getOpeningPrice() {
+        return openingPrice;
+    }
+
+    public double getChange() {
+        return price - openingPrice;
+    }
+
+    public double getChangePercent() {
+        if (openingPrice == 0) {
+            return 0;
+        }
+        return (getChange() / openingPrice) * 100.0;
+    }
+
+    public double getDayLow() {
+        double low = price;
+        for (int i = 0; i < candles.size(); i++) {
+            low = Math.min(low, candles.get(i).lowest());
+        }
+        return low;
+    }
+
+    public double getDayHigh() {
+        double high = price;
+        for (int i = 0; i < candles.size(); i++) {
+            high = Math.max(high, candles.get(i).highest());
+        }
+        return high;
+    }
+
     public ArrayList<Candle> getCandles() {
         return candles;
     }
