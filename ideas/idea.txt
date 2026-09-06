@@ -34,3 +34,6 @@ Held
 Cash Idle
 
 - MakeDecision Fills orders
+
+- Now we make the orders / trader hierachy 
+- Retail and institutions actually trade and move the candles.
