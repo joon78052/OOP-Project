@@ -33,9 +33,8 @@ public class Market {
 
     }
 
-    public void updateButton() {
-        // Button update logic will move prices later, this will be reworked as a "step" button
-    }
+    // Removed updateButton method as the button will does not need market logic.
+
 
     public void addStock(Stock stock) {
         stocks.add(stock);
@@ -48,4 +47,9 @@ public class Market {
     public ArrayList<Stock> getStocks() {
         return stocks;
     }
+
+    public int getTick() {
+        return tick;
+    }
+
 }
