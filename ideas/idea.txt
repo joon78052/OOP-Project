@@ -38,3 +38,8 @@ Cash Idle
 - Now we make the orders / trader hierachy 
 - Retail and institutions actually trade and move the candles.
 - Okay, made it look alot better than the one before with no seperators and default font.
+
+
+Current Itteration:
+    Logic has been added, it will randomly move up/down within a set restraint.
+    Foundation for start/pause buttons have been laid out, ticks (session time) will also be displayed on the graphic.
