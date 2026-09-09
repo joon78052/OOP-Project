@@ -8,5 +8,13 @@ public abstract class Trader {
         this.cash = cash;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public double getCash() {
+        return cash;
+    }
+
     public abstract void makeDecision();
 }

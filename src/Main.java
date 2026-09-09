@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -39,7 +40,7 @@ public class Main {
                     JFrame.EXIT_ON_CLOSE
             );
 
-            frame.setSize(1020, 740);
+            frame.setSize(1360, 780);
 
             frame.setLayout(
                     new BorderLayout()
@@ -53,6 +54,10 @@ public class Main {
                             marketPanel
                     );
 
+            scrollPane.getViewport().setBackground(
+                    new Color(13, 16, 20)
+            );
+
             JButton startButton =
                     new JButton("Start");
 
@@ -65,6 +70,10 @@ public class Main {
             JLabel tickLabel =
                     new JLabel("Tick: 0");
 
+            tickLabel.setForeground(
+                    new Color(210, 216, 224)
+            );
+
             JPanel controls =
                     new JPanel(
                             new FlowLayout(
@@ -72,18 +81,35 @@ public class Main {
                             )
                     );
 
+            controls.setBackground(
+                    new Color(17, 21, 26)
+            );
+
             controls.add(startButton);
             controls.add(pauseButton);
             controls.add(stepButton);
             controls.add(tickLabel);
+
+            TradesPanel[] tradesPanelHolder = new TradesPanel[1];
+
+            Runnable repaintAll = () -> {
+                marketPanel.repaint();
+                tradesPanelHolder[0].refreshAccount();
+                tradesPanelHolder[0].repaint();
+                tickLabel.setText("Tick: " + market.getTick());
+            };
+
+            tradesPanelHolder[0] =
+                    new TradesPanel(market, repaintAll);
+
+            TradesPanel tradesPanel = tradesPanelHolder[0];
 
             Timer timer =
                     new Timer(
                             500,
                             e -> runOneTick(
                                     market,
-                                    marketPanel,
-                                    tickLabel
+                                    repaintAll
                             )
                     );
 
@@ -101,8 +127,7 @@ public class Main {
 
                     runOneTick(
                             market,
-                            marketPanel,
-                            tickLabel
+                            repaintAll
                     );
                 }
             });
@@ -117,23 +142,22 @@ public class Main {
                     BorderLayout.CENTER
             );
 
+            frame.add(
+                    tradesPanel,
+                    BorderLayout.EAST
+            );
+
             frame.setVisible(true);
         });
     }
 
     private static void runOneTick(
             Market market,
-            MarketPanel marketPanel,
-            JLabel tickLabel
+            Runnable repaintAll
     ) {
 
         market.update();
 
-        marketPanel.repaint();
-
-        tickLabel.setText(
-                "Tick: "
-                        + market.getTick()
-        );
+        repaintAll.run();
     }
 }

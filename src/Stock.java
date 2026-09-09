@@ -2,7 +2,10 @@ import java.util.ArrayList;
 
 public class Stock {
 
-    private static final int MAX_CANDLES = 40;
+    private static final int MAX_CANDLES = 60;
+
+
+    public static final double SUPPLY = 1_000_000;
 
     private String symbol;
     private double price;
@@ -14,7 +17,7 @@ public class Stock {
         this.price = price;
         this.openingPrice = price;
         this.candles = new ArrayList<>();
-        candles.add(new Candle(price, price, price, price));
+        candles.add(new Candle(price, price, price, price, 0));
     }
 
     public String getSymbol() {
@@ -23,6 +26,10 @@ public class Stock {
 
     public double getPrice() {
         return price;
+    }
+
+    public double getMarketCap() {
+        return price * SUPPLY;
     }
 
     public double getOpeningPrice() {
@@ -60,16 +67,16 @@ public class Stock {
         return candles;
     }
 
-    public void updatePrice(double newPrice) {
-        addCandle(price, newPrice);
+    public void updatePrice(double newPrice, double volumeUsd) {
+        addCandle(price, newPrice, volumeUsd);
         this.price = newPrice;
     }
 
-    private void addCandle(double open, double close) {
+    private void addCandle(double open, double close, double volumeUsd) {
         double wick = Math.abs(close - open) * 0.35 + price * 0.004;
         double high = Math.max(open, close) + wick;
         double low = Math.max(0.01, Math.min(open, close) - wick);
-        candles.add(new Candle(open, high, low, close));
+        candles.add(new Candle(open, high, low, close, volumeUsd));
         if (candles.size() > MAX_CANDLES) {
             candles.remove(0);
         }
