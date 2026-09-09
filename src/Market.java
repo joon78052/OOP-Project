@@ -32,6 +32,10 @@ public class Market {
             int tradeCount = 1 + random.nextInt(4);
 
             double price = stock.getPrice();
+
+            double tickHigh = price;
+            double tickLow = price;
+
             double volumeUsd = 0;
 
             for (int i = 0; i < tradeCount; i++) {
@@ -43,6 +47,9 @@ public class Market {
 
                 double impact = (usd / 150_000.0) * (isBuy ? 1 : -1);
                 price = Math.max(0.01, price * (1 + impact));
+
+                tickHigh = Math.max(tickHigh, price);
+                tickLow = Math.min(tickLow, price);
 
                 Trade trade = new Trade(
                         isBuy ? Trade.Type.BUY : Trade.Type.SELL,
@@ -57,7 +64,12 @@ public class Market {
                 volumeUsd += usd;
             }
 
-            stock.updatePrice(price, volumeUsd);
+            stock.updatePrice(
+                price,
+                tickHigh,
+                tickLow,
+                volumeUsd
+            );
         }
     }
 

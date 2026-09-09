@@ -68,15 +68,74 @@ public class Stock {
     }
 
     public void updatePrice(double newPrice, double volumeUsd) {
-        addCandle(price, newPrice, volumeUsd);
+
+        double high =
+                Math.max(price, newPrice);
+    
+        double low =
+                Math.min(price, newPrice);
+    
+        updatePrice(
+                newPrice,
+                high,
+                low,
+                volumeUsd
+        );
+    }
+    
+    
+    public void updatePrice(
+            double newPrice,
+            double high,
+            double low,
+            double volumeUsd
+    ) {
+    
+        double open = price;
+    
+        high =
+                Math.max(
+                        high,
+                        Math.max(open, newPrice)
+                );
+    
+        low =
+                Math.min(
+                        low,
+                        Math.min(open, newPrice)
+                );
+    
+        low = Math.max(0.01, low);
+    
+        addCandle(
+                open,
+                high,
+                low,
+                newPrice,
+                volumeUsd
+        );
+    
         this.price = newPrice;
     }
 
-    private void addCandle(double open, double close, double volumeUsd) {
-        double wick = Math.abs(close - open) * 0.35 + price * 0.004;
-        double high = Math.max(open, close) + wick;
-        double low = Math.max(0.01, Math.min(open, close) - wick);
-        candles.add(new Candle(open, high, low, close, volumeUsd));
+    private void addCandle(
+        double open,
+        double high,
+        double low,
+        double close,
+        double volumeUsd
+    ) {
+
+        candles.add(
+            new Candle(
+                    open,
+                    high,
+                    low,
+                    close,
+                    volumeUsd
+            )
+        );
+
         if (candles.size() > MAX_CANDLES) {
             candles.remove(0);
         }
