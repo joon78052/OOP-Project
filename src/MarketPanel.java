@@ -72,11 +72,6 @@ public class MarketPanel extends JPanel {
         Graph.setColor(TEXT);
         Graph.drawString(stock.getSymbol() + "/USD", x, y);
 
-        int pairWidth = Graph.getFontMetrics().stringWidth(stock.getSymbol() + "/USD");
-        Graph.setFont(smallFont);
-        Graph.setColor(LABEL);
-        Graph.drawString("on SimSwap - 1m", x + pairWidth + 10, y);
-
         ArrayList<Candle> candles = stock.getCandles();
         Candle last = candles.get(candles.size() - 1);
         Color ohlcColor = last.isUp() ? UP : DOWN;

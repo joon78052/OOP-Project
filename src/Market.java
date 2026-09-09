@@ -13,11 +13,11 @@ public class Market {
     private Random random;
     private int tick;
 
-    public Market() {
+    public Market(double startingCash) {
         stocks = new ArrayList<>();
         traders = new ArrayList<>();
         trades = new ArrayList<>();
-        player = new Player("You", 10_000.00);
+        player = new Player("You", startingCash);
 
         random = new Random();
         tick = 0;

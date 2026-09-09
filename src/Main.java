@@ -1,11 +1,14 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
@@ -15,19 +18,24 @@ public class Main {
 
         SwingUtilities.invokeLater(() -> {
 
-            Market market = new Market();
+            Setup setup = askSetup();
+            if (setup == null) {
+                return;
+            }
+
+            Market market = new Market(setup.cash);
 
             market.addStock(
                     new Stock(
                             "JOON",
-                            100.00
+                            setup.joonPrice
                     )
             );
 
             market.addStock(
                     new Stock(
                             "HXMZA",
-                            75.00
+                            setup.hxmzaPrice
                     )
             );
 
@@ -65,7 +73,7 @@ public class Main {
                     new JButton("Pause");
 
             JButton stepButton =
-                    new JButton("Step");
+                    new JButton("Go one Step");
 
             JLabel tickLabel =
                     new JLabel("Tick: 0");
@@ -159,5 +167,66 @@ public class Main {
         market.update();
 
         repaintAll.run();
+    }
+
+    private static Setup askSetup() {
+        JTextField cashField = new JTextField("10000");
+        JTextField joonField = new JTextField("50");
+        JTextField hxmzaField = new JTextField("25");
+
+        JPanel panel = new JPanel(new GridLayout(0, 2, 8, 8));
+        panel.add(new JLabel("Starting cash $"));
+        panel.add(cashField);
+        panel.add(new JLabel("JOON (TICKER) starting price in $"));
+        panel.add(joonField);
+        panel.add(new JLabel("HXMZA (TICKER) starting price in $"));
+        panel.add(hxmzaField);
+
+        while (true) {
+            int result = JOptionPane.showConfirmDialog(
+                    null,
+                    panel,
+                    "Set up the market",
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE
+            );
+
+            if (result != JOptionPane.OK_OPTION) {
+                return null;
+            }
+
+            try {
+                Setup setup = new Setup();
+                setup.cash = parsePositive(cashField.getText(), "starting cash");
+                setup.joonPrice = parsePositive(joonField.getText(), "JOON price");
+                setup.hxmzaPrice = parsePositive(hxmzaField.getText(), "HXMZA price");
+                return setup;
+            } catch (OrderException e) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        e.getMessage(),
+                        "Invalid setup",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+        }
+    }
+
+    private static double parsePositive(String text, String label) throws OrderException {
+        try {
+            double value = Double.parseDouble(text.trim().replace("$", "").replace(",", ""));
+            if (value <= 0 || Double.isNaN(value) || Double.isInfinite(value)) {
+                throw new OrderException(label + " must be greater than 0");
+            }
+            return value;
+        } catch (NumberFormatException e) {
+            throw new OrderException("Enter a valid number for " + label);
+        }
+    }
+
+    private static class Setup {
+        double cash;
+        double joonPrice;
+        double hxmzaPrice;
     }
 }
