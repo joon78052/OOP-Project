@@ -120,10 +120,6 @@ public class Market {
         }
     }
 
-    private String randomTraderTag() {
-        return "Trader" + (1 + random.nextInt(99));
-    }
-
     public void addStock(Stock stock) {
         stocks.add(stock);
     }
