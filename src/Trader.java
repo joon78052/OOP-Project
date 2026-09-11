@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public abstract class Trader {
 
     protected String name;
@@ -16,5 +18,8 @@ public abstract class Trader {
         return cash;
     }
 
-    public abstract void makeDecision();
+    public abstract Order makeDecision(
+            Stock stock,
+            Random random
+    );
 }
