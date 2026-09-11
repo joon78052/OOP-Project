@@ -23,7 +23,7 @@ public class Player extends Trader {
     }
 
     @Override
-    public void makeDecision() {
-       
+    public Order makeDecision(Stock stock, java.util.Random random) {
+        return null;
     }
 }
