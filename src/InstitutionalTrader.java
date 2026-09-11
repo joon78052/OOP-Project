@@ -18,37 +18,16 @@ public class InstitutionalTrader
 
         double buyChance = 0.50;
 
-        if (
-                stock.getChangePercent()
-                < -1.0
-        ) {
-
+        if (stock.getChangePercent() < -1.0) {
             buyChance = 0.65;
-
-        } else if (
-                stock.getChangePercent()
-                > 1.0
-        ) {
-
+        } else if (stock.getChangePercent() > 1.0) {
             buyChance = 0.35;
         }
 
-        boolean buy =
-                random.nextDouble()
-                        < buyChance;
+        boolean buy = random.nextDouble() < buyChance;
 
-        double usd =
-                500
-                + random.nextDouble()
-                * 2000;
+        double usd = 500 + random.nextDouble() * 2000;
 
-        return new Order(
-                this,
-                stock,
-                usd,
-                buy
-                        ? Trade.Type.BUY
-                        : Trade.Type.SELL
-        );
+        return new Order(this, stock, usd, buy ? Trade.Type.BUY : Trade.Type.SELL);
     }
 }

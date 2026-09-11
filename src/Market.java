@@ -26,50 +26,40 @@ public class Market {
     public void update() {
 
         tick++;
-
+    
         for (Stock stock : stocks) {
-
-            int tradeCount = 1 + random.nextInt(4);
-
             double price = stock.getPrice();
 
             double tickHigh = price;
             double tickLow = price;
-
+    
             double volumeUsd = 0;
-
-            for (int i = 0; i < tradeCount; i++) {
-
-                boolean isBuy = random.nextBoolean();
-
-                double usd = 20 + random.nextDouble() * 1200;
+    
+            for (Trader trader : traders) {
+                Order order = trader.makeDecision(stock, random);
+    
+                if (order == null) {continue;}
+    
+                boolean isBuy = order.isBuy();
+    
+                double usd = order.getUsd();
+    
                 double quantity = usd / price;
-
+    
                 double impact = (usd / 150_000.0) * (isBuy ? 1 : -1);
+    
                 price = Math.max(0.01, price * (1 + impact));
-
+    
                 tickHigh = Math.max(tickHigh, price);
                 tickLow = Math.min(tickLow, price);
-
-                Trade trade = new Trade(
-                        isBuy ? Trade.Type.BUY : Trade.Type.SELL,
-                        stock,
-                        price,
-                        quantity,
-                        randomTraderTag(),
-                        tick
-                );
-
+    
+                Trade trade = new Trade(order.getType(), stock, price, quantity, trader.getName(), tick);
+    
                 recordTrade(trade);
                 volumeUsd += usd;
             }
-
-            stock.updatePrice(
-                price,
-                tickHigh,
-                tickLow,
-                volumeUsd
-            );
+    
+            stock.updatePrice(price, tickHigh, tickLow, volumeUsd);
         }
     }
 
@@ -111,14 +101,7 @@ public class Market {
         double impact = (usd / 50_000.0) * (isBuy ? 1 : -1);
         double newPrice = Math.max(0.01, stock.getPrice() * (1 + impact));
 
-        Trade trade = new Trade(
-                isBuy ? Trade.Type.BUY : Trade.Type.SELL,
-                stock,
-                newPrice,
-                quantity,
-                player.getName(),
-                tick
-        );
+        Trade trade = new Trade(isBuy ? Trade.Type.BUY : Trade.Type.SELL, stock, newPrice, quantity, player.getName(), tick);
 
         recordTrade(trade);
         stock.updatePrice(newPrice, usd);
