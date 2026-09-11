@@ -121,7 +121,7 @@ public class Market {
     }
 
     public void addStock(Stock stock) {
-        stocks.add(stock);
+stocks.add(stock);
     }
 
     public void addTrader(Trader trader) {
