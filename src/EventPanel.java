@@ -88,14 +88,14 @@ public class EventPanel extends JPanel {
 
         eventList.removeAll();
         if (active.isEmpty()) {
-            eventList.add(row("No active events", LABEL));
+            eventList.add(row("No active events", LABEL, null));
             statusLabel.setText("No active events");
         } else {
             statusLabel.setText(active.size() + " active");
             for (MarketEvent event : active) {
                 int ticksLeft = event.getEndTick() - market.getTick();
                 String text = event.getType().getLabel() + "  ·  " + Math.max(0, ticksLeft) + " ticks left";
-                eventList.add(row(text, DOWN));
+                eventList.add(row(text, DOWN, EventDescription.hoverText(event.getType())));
                 eventList.add(Box.createVerticalStrut(6));
             }
         }
@@ -108,11 +108,14 @@ public class EventPanel extends JPanel {
         onChange.run();
     }
 
-    private JLabel row(String text, Color color) {
+    private JLabel row(String text, Color color, String tooltip) {
         JLabel label = new JLabel(text);
         label.setForeground(color);
         label.setFont(new Font("SansSerif", Font.PLAIN, 12));
         label.setAlignmentX(LEFT_ALIGNMENT);
+        if (tooltip != null && !tooltip.isEmpty()) {
+            label.setToolTipText(tooltip);
+        }
         return label;
     }
 }
