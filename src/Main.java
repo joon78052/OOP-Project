@@ -34,7 +34,12 @@ public class Main {
             }
             
             for (int i = 1; i <= 2; i++) {
-                market.addTrader(new InstitutionalTrader("Institution" + i, 100000));
+                InstitutionalTrader trader =
+                        new InstitutionalTrader("Institution" + i, 100000);
+                if (i == 2) {
+                    trader.setRecessionStrategy(new OpportunisticBuyerStrategy());
+                }
+                market.addTrader(trader);
             }
 
             JFrame frame = new JFrame("Stock Market Simulator");

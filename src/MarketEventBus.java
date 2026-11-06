@@ -10,16 +10,16 @@ import java.util.Set;
  */
 public class MarketEventBus {
 
-    private final Set<MarketEventListener> listeners = new LinkedHashSet<>();
+    private final Set<MarketObserver> listeners = new LinkedHashSet<>();
 
-    public boolean add(MarketEventListener listener) {
+    public boolean add(MarketObserver listener) {
         if (listener == null) {
             return false;
         }
         return listeners.add(listener);
     }
 
-    public boolean remove(MarketEventListener listener) {
+    public boolean remove(MarketObserver listener) {
         return listeners.remove(listener);
     }
 
@@ -28,9 +28,16 @@ public class MarketEventBus {
     }
 
     public void publish(MarketEvent event) {
-        List<MarketEventListener> snapshot = new ArrayList<>(listeners);
-        for (MarketEventListener listener : snapshot) {
+        List<MarketObserver> snapshot = new ArrayList<>(listeners);
+        for (MarketObserver listener : snapshot) {
             listener.onMarketEvent(event);
+        }
+    }
+
+    public void publishOrderUpdate(OrderExecutionReport report) {
+        List<MarketObserver> snapshot = new ArrayList<>(listeners);
+        for (MarketObserver listener : snapshot) {
+            listener.onOrderUpdate(report);
         }
     }
 

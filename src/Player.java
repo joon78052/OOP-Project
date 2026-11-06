@@ -1,24 +1,20 @@
 public class Player extends Trader {
 
-    private Portfolio portfolio;
-
     public Player(String name, double cash) {
         super(name, cash);
-        portfolio = new Portfolio();
-    }
-
-    public Portfolio getPortfolio() {
-        return portfolio;
     }
 
     public void spend(double usd) throws OrderException {
-        if (usd > cash) {
+        if (usd <= 0 || Double.isNaN(usd) || Double.isInfinite(usd)) {
+            throw new OrderException("Amount must be positive and finite");
+        }
+        if (usd > getAvailableCash()) {
             throw new OrderException("Not enough cash");
         }
         cash -= usd;
     }
 
     public void receive(double usd) {
-        cash += usd;
+        receiveCash(usd);
     }
 }

@@ -1,29 +1,47 @@
 public class Trade {
 
-    public enum Type {
-        BUY,
-        SELL
-    }
-
-    private final Type type;
+    private final long executionId;
     private final Stock stock;
-    private final double price;    
-    private final double quantity;   
-    private final String traderTag; 
-    private final int tick;          
+    private final double price;
+    private final double quantity;
+    private final Trader buyer;
+    private final Trader seller;
+    private final long buyOrderId;
+    private final long sellOrderId;
+    private final int tick;
 
-    public Trade(Type type, Stock stock, double price, double quantity,
-                 String traderTag, int tick) {
-        this.type = type;
+    public Trade(
+            long executionId,
+            Stock stock,
+            double price,
+            double quantity,
+            Trader buyer,
+            Trader seller,
+            long buyOrderId,
+            long sellOrderId,
+            int tick
+    ) {
+        if (stock == null || buyer == null || seller == null) {
+            throw new IllegalArgumentException("Execution participants cannot be null");
+        }
+        if (price <= 0 || quantity <= 0
+                || Double.isNaN(price) || Double.isNaN(quantity)
+                || Double.isInfinite(price) || Double.isInfinite(quantity)) {
+            throw new IllegalArgumentException("Execution price and quantity must be positive");
+        }
+        this.executionId = executionId;
         this.stock = stock;
         this.price = price;
         this.quantity = quantity;
-        this.traderTag = traderTag;
+        this.buyer = buyer;
+        this.seller = seller;
+        this.buyOrderId = buyOrderId;
+        this.sellOrderId = sellOrderId;
         this.tick = tick;
     }
 
-    public Type getType() {
-        return type;
+    public long getExecutionId() {
+        return executionId;
     }
 
     public Stock getStock() {
@@ -46,15 +64,35 @@ public class Trade {
         return price * Stock.SUPPLY;
     }
 
+    public Trader getBuyer() {
+        return buyer;
+    }
+
+    public Trader getSeller() {
+        return seller;
+    }
+
+    public String getBuyerName() {
+        return buyer.getName();
+    }
+
+    public String getSellerName() {
+        return seller.getName();
+    }
+
+    public long getBuyOrderId() {
+        return buyOrderId;
+    }
+
+    public long getSellOrderId() {
+        return sellOrderId;
+    }
+
     public String getTraderTag() {
-        return traderTag;
+        return getBuyerName() + " / " + getSellerName();
     }
 
     public int getTick() {
         return tick;
-    }
-
-    public boolean isBuy() {
-        return type == Type.BUY;
     }
 }

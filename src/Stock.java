@@ -11,12 +11,19 @@ public class Stock {
     private double price;
     private double openingPrice;
     private ArrayList<Candle> candles;
+    private double tickOpen;
+    private double tickHigh;
+    private double tickLow;
+    private double tickVolumeUsd;
 
     public Stock(String symbol, double price) {
         this.symbol = symbol;
         this.price = price;
         this.openingPrice = price;
         this.candles = new ArrayList<>();
+        this.tickOpen = price;
+        this.tickHigh = price;
+        this.tickLow = price;
         candles.add(new Candle(price, price, price, price, 0));
     }
 
@@ -67,55 +74,24 @@ public class Stock {
         return candles;
     }
 
-    public void updatePrice(double newPrice, double volumeUsd) {
-
-        double high =
-                Math.max(price, newPrice);
-    
-        double low =
-                Math.min(price, newPrice);
-    
-        updatePrice(
-                newPrice,
-                high,
-                low,
-                volumeUsd
-        );
+    public void recordExecution(double executionPrice, double quantity) {
+        if (executionPrice <= 0 || quantity <= 0
+                || Double.isNaN(executionPrice) || Double.isNaN(quantity)
+                || Double.isInfinite(executionPrice) || Double.isInfinite(quantity)) {
+            throw new IllegalArgumentException("Execution values must be positive and finite");
+        }
+        price = executionPrice;
+        tickHigh = Math.max(tickHigh, executionPrice);
+        tickLow = Math.min(tickLow, executionPrice);
+        tickVolumeUsd += executionPrice * quantity;
     }
-    
-    
-    public void updatePrice(
-            double newPrice,
-            double high,
-            double low,
-            double volumeUsd
-    ) {
-    
-        double open = price;
-    
-        high =
-                Math.max(
-                        high,
-                        Math.max(open, newPrice)
-                );
-    
-        low =
-                Math.min(
-                        low,
-                        Math.min(open, newPrice)
-                );
-    
-        low = Math.max(0.01, low);
-    
-        addCandle(
-                open,
-                high,
-                low,
-                newPrice,
-                volumeUsd
-        );
-    
-        this.price = newPrice;
+
+    public void closeTick() {
+        addCandle(tickOpen, tickHigh, tickLow, price, tickVolumeUsd);
+        tickOpen = price;
+        tickHigh = price;
+        tickLow = price;
+        tickVolumeUsd = 0;
     }
 
     private void addCandle(
