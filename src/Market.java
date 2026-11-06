@@ -134,6 +134,7 @@ public class Market {
     public void addStock(Stock stock) {
         stocks.add(stock);
         matchingEngine.registerStock(stock);
+        player.getPortfolio().addShares(stock, 200);
     }
 
     public void addTrader(Trader trader) {

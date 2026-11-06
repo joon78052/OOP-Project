@@ -190,6 +190,15 @@ public class MarketPanel extends JPanel implements MarketEventListener {
         int colW = width / 4;
         int rowH = 24;
 
+        OrderBookAnalytics analytics = market.getOrderBookAnalytics(stock.getSymbol());
+        LiquiditySnapshot liquidity = analytics.snapshot();
+        java.util.Map<OrderStatus, Long> statusCounts =
+                market.getStats().ordersByStatus(market.getOrders());
+        long pending = statusCounts.getOrDefault(OrderStatus.PENDING, 0L)
+                + statusCounts.getOrDefault(OrderStatus.PARTIAL, 0L);
+        ArrayList<Trade> trades = market.getTrades();
+        Trade lastTrade = trades.isEmpty() ? null : trades.get(trades.size() - 1);
+
         String[][] cells = {
             {"Open", money(stock.getOpeningPrice()),
                 "Day range", money(stock.getDayLow()) + " - " + money(stock.getDayHigh()),
@@ -197,16 +206,16 @@ public class MarketPanel extends JPanel implements MarketEventListener {
                 "Supply", compact(Stock.SUPPLY)},
             {"Last", money(stock.getPrice()),
                 "Change", formatChange(stock.getChange()) + " (" + formatChange(stock.getChangePercent()) + "%)",
-                "Sellers", "--",
-                "Cash idle", "--"},
-            {"Previous close", money(stock.getOpeningPrice()),
+                "Best bid", money(liquidity.getBestBid()),
+                "Best ask", money(liquidity.getBestAsk())},
+            {"Spread", money(liquidity.getSpread()),
                 "Volume", compactUsd(totalVolume(stock)),
-                "Retail flow", "--",
-                "Traders", "--"},
-            {"Last trade", "--",
-                "Institutional flow", "--",
-                "Status", "Waiting for traders",
-                "", ""}
+                "Bid qty", compact(liquidity.getTotalBidQuantity()),
+                "Ask qty", compact(liquidity.getTotalAskQuantity())},
+            {"Last trade", lastTrade == null ? "--" : money(lastTrade.getPrice()),
+                "Imbalance", String.format("%.2f", liquidity.getBuySellImbalance()),
+                "Open orders", String.valueOf(pending),
+                "Partial", String.valueOf(liquidity.getPartiallyFilledOrderCount())}
         };
 
         Stroke old = Graph.getStroke();
