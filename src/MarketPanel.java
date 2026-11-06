@@ -9,7 +9,7 @@ import java.awt.Stroke;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 
-public class MarketPanel extends JPanel {
+public class MarketPanel extends JPanel implements MarketEventListener {
 
     private static final Color BG = new Color(13, 16, 20);
     private static final Color CHART_BG = new Color(17, 21, 26);
@@ -20,6 +20,7 @@ public class MarketPanel extends JPanel {
     private static final Color DOWN = Candle.DOWN;
 
     private final Market market;
+    private String headline = "";
     private final Font titleFont = new Font("SansSerif", Font.BOLD, 15);
     private final Font priceFont = new Font("SansSerif", Font.BOLD, 26);
     private final Font changeFont = new Font("SansSerif", Font.BOLD, 13);
@@ -28,8 +29,22 @@ public class MarketPanel extends JPanel {
 
     public MarketPanel(Market market) {
         this.market = market;
+        market.getEventBus().add(this);
         setBackground(BG);
         setPreferredSize(new Dimension(900, 980));
+    }
+
+    @Override
+    public void onMarketEvent(MarketEvent event) {
+        if (event.getType() != MarketEventType.ECONOMIC_RECESSION) {
+            return;
+        }
+        if (event.getPhase() == MarketEventPhase.ACTIVE) {
+            headline = event.getType().getLabel();
+        } else {
+            headline = "";
+        }
+        repaint();
     }
 
     @Override
@@ -50,6 +65,11 @@ public class MarketPanel extends JPanel {
         Graph2D.setFont(bodyFont);
         Graph2D.setColor(LABEL);
         Graph2D.drawString("Stock Market Sim", left, y);
+        if (!headline.isEmpty()) {
+            int titleWidth = Graph2D.getFontMetrics().stringWidth("Stock Market Sim");
+            Graph2D.setColor(DOWN);
+            Graph2D.drawString(headline, left + titleWidth + 16, y);
+        }
         y += 14;
 
         int chartHeight = 210; 

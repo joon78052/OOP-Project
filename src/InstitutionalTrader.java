@@ -16,13 +16,15 @@ public class InstitutionalTrader
             Random random
     ) {
 
-        double buyChance = 0.50;
+        double buyChance = 0.50 + getSentiment();
 
         if (stock.getChangePercent() < -1.0) {
-            buyChance = 0.65;
+            buyChance = 0.65 + getSentiment();
         } else if (stock.getChangePercent() > 1.0) {
-            buyChance = 0.35;
+            buyChance = 0.35 + getSentiment();
         }
+
+        buyChance = Math.max(0.05, Math.min(0.95, buyChance));
 
         boolean buy = random.nextDouble() < buyChance;
 

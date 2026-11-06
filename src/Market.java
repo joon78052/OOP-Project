@@ -14,6 +14,7 @@ public class Market {
     private int tick;
     private MarketEventBus eventBus;
     private MarketEventGenerator eventGenerator;
+    private MarketStats stats;
 
     public Market(double startingCash) {
         stocks = new ArrayList<>();
@@ -24,12 +25,15 @@ public class Market {
         random = new Random();
         tick = 0;
         eventBus = new MarketEventBus();
-        eventGenerator = new MarketEventGenerator(1L, eventBus);
+        eventGenerator = new MarketEventGenerator(System.nanoTime(), eventBus);
+        stats = new MarketStats();
+        eventBus.add(stats);
     }
 
     public void update() {
 
         tick++;
+        eventGenerator.tick(tick);
     
         for (Stock stock : stocks) {
             double price = stock.getPrice();
@@ -130,6 +134,7 @@ stocks.add(stock);
 
     public void addTrader(Trader trader) {
         traders.add(trader);
+        eventBus.add(trader);
     }
 
     public Player getPlayer() {
@@ -154,5 +159,9 @@ stocks.add(stock);
 
     public MarketEventGenerator getEventGenerator() {
         return eventGenerator;
+    }
+
+    public MarketStats getStats() {
+        return stats;
     }
 }

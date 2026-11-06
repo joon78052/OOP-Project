@@ -8,13 +8,15 @@ public class RetailTrader extends Trader {
 
     @Override
     public Order makeDecision(Stock stock, Random random) {
-        double buyChance = 0.50;
+        double buyChance = 0.50 + getSentiment();
 
         if (stock.getChangePercent() > 0) {
-            buyChance = 0.60;
+            buyChance = 0.60 + getSentiment();
         } else if (stock.getChangePercent() < 0) {
-            buyChance = 0.40;
+            buyChance = 0.40 + getSentiment();
         }
+
+        buyChance = Math.max(0.05, Math.min(0.95, buyChance));
 
         boolean buy = random.nextDouble() < buyChance;
         double usd = 20 + random.nextDouble() * 280;

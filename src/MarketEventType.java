@@ -9,7 +9,14 @@ public enum MarketEventType {
     GLOBAL_CRISIS,
     MARKET_RECOVERY,
     LIQUIDITY_CRISIS,
-    MARKET_PANIC
+    MARKET_PANIC;
+
+    public String getLabel() {
+        if (this == ECONOMIC_RECESSION) {
+            return "Economic recession";
+        }
+        return name();
+    }
 }
 // What more should i add to this list?
 

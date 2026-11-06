@@ -40,7 +40,7 @@ public class Main {
             JFrame frame = new JFrame("Stock Market Simulator");
 
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(1360, 780);
+            frame.setSize(1600, 780);
             frame.setLayout(new BorderLayout());
 
             MarketPanel marketPanel = new MarketPanel(market);
@@ -66,17 +66,19 @@ public class Main {
             controls.add(stepButton);
             controls.add(tickLabel);
 
-            TradesPanel[] tradesPanelHolder =
-                    new TradesPanel[1];
+            TradesPanel[] tradesPanelHolder = new TradesPanel[1];
+            EventPanel[] eventPanelHolder = new EventPanel[1];
 
             Runnable repaintAll = () -> {
                 marketPanel.repaint();
                 tradesPanelHolder[0].refreshAccount();
                 tradesPanelHolder[0].repaint();
+                eventPanelHolder[0].refresh();
                 tickLabel.setText("Tick: " + market.getTick());
             };
 
             tradesPanelHolder[0] = new TradesPanel(market, repaintAll);
+            eventPanelHolder[0] = new EventPanel(market, repaintAll);
 
             TradesPanel tradesPanel = tradesPanelHolder[0];
 
@@ -92,6 +94,7 @@ public class Main {
             });
 
             frame.add(controls, BorderLayout.NORTH);
+            frame.add(eventPanelHolder[0], BorderLayout.WEST);
             frame.add(scrollPane, BorderLayout.CENTER);
             frame.add(tradesPanel, BorderLayout.EAST);
             frame.setVisible(true);
