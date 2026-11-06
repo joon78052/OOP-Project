@@ -111,7 +111,7 @@ public class EventPanel extends JPanel {
     private JLabel row(String text, Color color, String tooltip) {
         JLabel label = new JLabel(text);
         label.setForeground(color);
-        label.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        label.setFont(new Font("SansSerif", Font.PLAIN, 13));
         label.setAlignmentX(LEFT_ALIGNMENT);
         if (tooltip != null && !tooltip.isEmpty()) {
             label.setToolTipText(tooltip);
