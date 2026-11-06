@@ -21,9 +21,4 @@ public class Player extends Trader {
     public void receive(double usd) {
         cash += usd;
     }
-
-    @Override
-    public Order makeDecision(Stock stock, java.util.Random random) {
-        return null;
-    }
 }

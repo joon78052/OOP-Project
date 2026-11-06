@@ -46,8 +46,10 @@ public abstract class Trader implements MarketEventListener {
         sentiment = activeRecessions > 0 ? event.getSentimentDelta() : 0;
     }
 
-    public abstract Order makeDecision(
-            Stock stock,
-            Random random
-    );
+    public Order makeDecision(Stock stock, Random random) {
+        if (strategy == null) {
+            return null;
+        }
+        return strategy.decide(this, stock, random);
+    }
 }
