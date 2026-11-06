@@ -300,7 +300,7 @@ public class TradesPanel extends JPanel {
                     break;
                 }
                 Trade trade = trades.get(i);
-                Color sideColor = TEXT;
+                Color sideColor = trade.isBuy() ? UP : DOWN;
 
                 String total = "$" + compact(trade.getTotalUsd());
                 int totalWidth = Graph2D.getFontMetrics().stringWidth(total);
@@ -312,7 +312,7 @@ public class TradesPanel extends JPanel {
                 Graph2D.drawString(age(trade), COL_AGE, y);
 
                 Graph2D.setColor(sideColor);
-                Graph2D.drawString("Fill", COL_TYPE, y);
+                Graph2D.drawString(trade.isBuy() ? "Buy" : "Sell", COL_TYPE, y);
 
                 Graph2D.setColor(TEXT);
                 Graph2D.drawString("$" + compact(trade.getMarketCap()), COL_MC, y);

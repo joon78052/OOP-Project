@@ -167,6 +167,14 @@ public class Market {
         return matchingEngine.getOrderBook(symbol);
     }
 
+    public OrderBookAnalytics getOrderBookAnalytics(String symbol) {
+        return OrderBookAnalytics.from(getOrderBook(symbol));
+    }
+
+    public LiquiditySnapshot getLiquiditySnapshot(String symbol) {
+        return getOrderBookAnalytics(symbol).snapshot();
+    }
+
     public MatchingEngine getMatchingEngine() {
         return matchingEngine;
     }

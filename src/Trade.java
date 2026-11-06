@@ -8,6 +8,7 @@ public class Trade {
     private final Trader seller;
     private final long buyOrderId;
     private final long sellOrderId;
+    private final OrderSide aggressorSide;
     private final int tick;
 
     public Trade(
@@ -19,9 +20,10 @@ public class Trade {
             Trader seller,
             long buyOrderId,
             long sellOrderId,
+            OrderSide aggressorSide,
             int tick
     ) {
-        if (stock == null || buyer == null || seller == null) {
+        if (stock == null || buyer == null || seller == null || aggressorSide == null) {
             throw new IllegalArgumentException("Execution participants cannot be null");
         }
         if (price <= 0 || quantity <= 0
@@ -37,6 +39,7 @@ public class Trade {
         this.seller = seller;
         this.buyOrderId = buyOrderId;
         this.sellOrderId = sellOrderId;
+        this.aggressorSide = aggressorSide;
         this.tick = tick;
     }
 
@@ -88,8 +91,16 @@ public class Trade {
         return sellOrderId;
     }
 
+    public OrderSide getAggressorSide() {
+        return aggressorSide;
+    }
+
+    public boolean isBuy() {
+        return aggressorSide == OrderSide.BUY;
+    }
+
     public String getTraderTag() {
-        return getBuyerName() + " / " + getSellerName();
+        return isBuy() ? getBuyerName() : getSellerName();
     }
 
     public int getTick() {

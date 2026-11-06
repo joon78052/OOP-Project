@@ -179,6 +179,7 @@ public class MatchingEngine {
             Trade trade = settle(
                     buyOrder,
                     sellOrder,
+                    incoming.getSide(),
                     executionPrice,
                     quantity,
                     tick);
@@ -200,6 +201,7 @@ public class MatchingEngine {
     private Trade settle(
             Order buyOrder,
             Order sellOrder,
+            OrderSide aggressorSide,
             double price,
             double quantity,
             int tick
@@ -236,6 +238,7 @@ public class MatchingEngine {
                 sellOrder.getTrader(),
                 buyOrder.getOrderId(),
                 sellOrder.getOrderId(),
+                aggressorSide,
                 tick);
         trades.add(trade);
         buyOrder.getStock().recordExecution(price, quantity);
