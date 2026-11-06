@@ -4,6 +4,7 @@ public abstract class Trader {
 
     protected String name;
     protected double cash;
+    private TradingStrategy strategy;
 
     public Trader(String name, double cash) {
         this.name = name;
@@ -16,6 +17,14 @@ public abstract class Trader {
 
     public double getCash() {
         return cash;
+    }
+
+    public TradingStrategy getStrategy() {
+        return strategy;
+    }
+
+    public void setStrategy(TradingStrategy strategy) {
+        this.strategy = strategy;
     }
 
     public abstract Order makeDecision(

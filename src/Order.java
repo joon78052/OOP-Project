@@ -4,6 +4,7 @@ public class Order {
     private final Stock stock;
     private final double usd;
     private final Trade.Type type;
+    private OrderStatus status;
 
     public Order(
             Trader trader,
@@ -15,6 +16,7 @@ public class Order {
         this.stock = stock;
         this.usd = usd;
         this.type = type;
+        this.status = OrderStatus.FILLED;
     }
 
     public Trader getTrader() {
@@ -35,5 +37,13 @@ public class Order {
 
     public boolean isBuy() {
         return type == Trade.Type.BUY;
+    }
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
     }
 }

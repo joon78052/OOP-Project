@@ -12,6 +12,8 @@ public class Market {
 
     private Random random;
     private int tick;
+    private MarketEventBus eventBus;
+    private MarketEventGenerator eventGenerator;
 
     public Market(double startingCash) {
         stocks = new ArrayList<>();
@@ -21,6 +23,8 @@ public class Market {
 
         random = new Random();
         tick = 0;
+        eventBus = new MarketEventBus();
+        eventGenerator = new MarketEventGenerator(1L, eventBus);
     }
 
     public void update() {
@@ -142,5 +146,13 @@ stocks.add(stock);
 
     public int getTick() {
         return tick;
+    }
+
+    public MarketEventBus getEventBus() {
+        return eventBus;
+    }
+
+    public MarketEventGenerator getEventGenerator() {
+        return eventGenerator;
     }
 }
