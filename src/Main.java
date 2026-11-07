@@ -37,7 +37,7 @@ public class Main {
                 InstitutionalTrader trader =
                         new InstitutionalTrader("Institution" + i, 100000);
                 if (i == 2) {
-                    trader.setRecessionStrategy(new OpportunisticBuyerStrategy());
+                    trader.setRecessionStrategy(Strategies.opportunisticBuyer());
                 }
                 market.addTrader(trader);
             }
