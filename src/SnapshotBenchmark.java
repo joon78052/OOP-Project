@@ -1,5 +1,14 @@
 import java.util.List;
- 
+
+// Test for SnapshotBenchmark.java
+// Run with:
+// java -cp target/classes SnapshotBenchmark
+// Expected output:
+// tick 0: 0 orders, sequential 0 us, parallel 0 us, same=true
+// tick 500: 1500 orders, sequential 1000 us, parallel 1000 us, same=true
+// tick 2000: 6000 orders, sequential 4000 us, parallel 4000 us, same=true
+// tick 8000: 24000 orders, sequential 16000 us, parallel 16000 us, same=true
+
 /** Compares the sequential and parallel liquidity collector on a growing order book. */
 public class SnapshotBenchmark {
  
